@@ -1,0 +1,52 @@
+#Posible solucion al ejercicio 36 de https://retosdeprogramacion.com/ejercicios/
+#Crea un programa que calcule el daño de un ataque durante
+# * una batalla Pokémon.
+# * - La fórmula será la siguiente: daño = 50 * (ataque / defensa) * efectividad
+# * - Efectividad: x2 (súper efectivo), x1 (neutral), x0.5 (no es muy efectivo)
+# * - Sólo hay 4 tipos de Pokémon: Agua, Fuego, Planta y Eléctrico 
+#   (buscar su efectividad)
+# * - El programa recibe los siguientes parámetros:
+# *  - Tipo del Pokémon atacante.
+# *  - Tipo del Pokémon defensor.
+# *  - Ataque: Entre 1 y 100.
+# *  - Defensa: Entre 1 y 100.
+
+import random
+
+#El juego funciona llamando a la funcion con los tipos de pokemon como argumentos
+# ej: batalla_pokemon('fuego', 'planta')
+
+
+def batalla_pokemon(jugador1, jugador2):
+    #Declaramos las viarbales. cada pokemon es un tipo(fuego, agua, planta, electrico) y posee 200 puntos de vida
+    pokemon1 = [jugador1, 200]
+    pokemon2 = [jugador2, 200]
+
+    #Efectividad relativa entre pokemon de distintos tipos
+    efectividad = {
+    'agua':{'fuego':2, 'planta':0.5 , 'electrico':1, 'agua':1 },
+    'fuego':{'agua':0.5 , 'planta':2 , 'electrico':1 , 'fuego':1},
+    'planta':{'agua':2 , 'fuego':0.5 , 'electrico':1 , 'planta':1 },
+    'electrico':{'agua':2 , 'fuego':1 , 'planta':1 , 'electrico': 1 },
+}
+
+    atacante, defensor = random.choice([(pokemon1, pokemon2), (pokemon2, pokemon1)]) #El jugador que lanza el primer ataque se elige de forma aleatoria
+
+    #Bucle cuya condicion es que queden puntos de vida a los jugadores
+    while atacante[1] > 0 and defensor[1] > 0:
+
+      
+        ataque = random.randint(1,100)    #puntos de ataque
+        defensa = random.randint(1, 100)  #puntos de defensa
+        daño = round(50 * (ataque/defensa) * efectividad[pokemon1[0]][pokemon2[0]])   #cálculo del daño en funcion de los puntos de ataque/defensa y la efectividad relativa de los tipo de pokemon
+        
+        defensor[1] -= daño  # reducimos los puntos de vida del defensor
+        defensor[1] = max(0, defensor[1])
+        
+        print(f"{atacante[0]} le hace {daño} puntos de daño a {defensor[0]}. Vida restante {defensor[1]}")
+        
+        if defensor[1] <= 0:
+            print(f"{defensor[0]} ha sido derrotado. {atacante[0]} gana la partida")
+            break   
+    
+        atacante, defensor = defensor, atacante  #Inversion del turno
